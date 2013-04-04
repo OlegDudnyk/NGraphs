@@ -24,11 +24,11 @@ namespace NGraphsTest {
             Vertices.Add(v4);
             var v5 = new Vertex(5);
             Vertices.Add(v5);
-            v1.AddNeighbour(v2);
-            v2.AddNeighbour(v3);
-            v2.AddNeighbour(v4);
-            v2.AddNeighbour(v5);
-            v4.AddNeighbour(v5);
+            v1.AddDoublyLinkedNeighbour(v2);
+            v2.AddDoublyLinkedNeighbour(v3);
+            v2.AddDoublyLinkedNeighbour(v4);
+            v2.AddDoublyLinkedNeighbour(v5);
+            v4.AddDoublyLinkedNeighbour(v5);
             Graph = new Graph(Vertices);
         }
 
@@ -61,14 +61,20 @@ namespace NGraphsTest {
         [TestMethod]
         public void GraphIsConnectedTest() {
             Assert.IsTrue(Graph.IsConnected());
-            Vertices[1].RemoveNeighbour(Vertices[2]);
+            RemoveEdge12();
             Assert.IsFalse(Graph.IsConnected());
+        }
+
+        private void RemoveEdge12() {
+            var edge = new Edge(Vertices[1], Vertices[2]);
+            Vertices[1].Edges.Remove(edge);
+            Vertices[2].Edges.Remove(edge);
         }
 
         [TestMethod]
         public void GraphGetConnectedComponentsTest() {
             Assert.AreEqual(1, Graph.GetConnectedComponents().Count);
-            Vertices[1].RemoveNeighbour(Vertices[2]);
+            RemoveEdge12();
             Assert.AreEqual(2, Graph.GetConnectedComponents().Count);
         }
 

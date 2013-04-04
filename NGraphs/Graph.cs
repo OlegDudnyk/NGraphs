@@ -8,7 +8,7 @@ namespace NGraphs {
 
         public int NVertices { get { return Vertices.Count; } }
 
-        public int NEdges { get { return Vertices.Sum(v => v.Neighbours.Count) / 2; } }
+        public int NEdges { get { return Vertices.Sum(v => v.Edges.Count) / 2; } }
 
         public Graph(IList<Vertex> vertices) {
             if (vertices == null) {
@@ -30,7 +30,8 @@ namespace NGraphs {
                 Vertex v = queue.Dequeue();
                 v.Print();
                 distance++;
-                foreach (Vertex w in v.Neighbours) {
+                foreach (Edge e in v.Edges) {
+                    Vertex w = e.Opposite(v);
                     if (visits.ContainsKey(w)) { continue; }
                     visits[w] = new BFSVisitingInfo(distance, v);
                     queue.Enqueue(w);
@@ -86,7 +87,8 @@ namespace NGraphs {
         }
 
         private void DepthFirstSearch(Vertex v, Dictionary<Vertex, DFSVisitingInfo> visits) {
-            foreach (Vertex vertex in v.Neighbours) {
+            foreach (Edge edge in v.Edges) {
+                Vertex vertex = edge.Opposite(v);
                 if (!visits.ContainsKey(vertex)) {
                     visits[vertex] = new DFSVisitingInfo(v);
                     DepthFirstSearch(vertex, visits);

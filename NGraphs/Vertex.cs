@@ -5,23 +5,24 @@ using System.Linq;
 namespace NGraphs {
     public class Vertex : IEquatable<Vertex> {
         public int Value { get; private set; }
-        public IList<Vertex> Neighbours { get; private set; }
+        public IList<Edge> Edges { get; private set; }
 
         public Vertex(int value) {
             Value = value;
-            Neighbours = new List<Vertex>();
+            Edges = new List<Edge>();
         }
 
-        public void AddNeighbour(Vertex v) {
+        public void AddDoublyLinkedNeighbour(Vertex v) {
             if (v == null) { return; }
-            Neighbours.Add(v);
-            v.Neighbours.Add(this);
+            var edge = new Edge(this, v);
+            Edges.Add(edge);
+            v.Edges.Add(edge);
         }
 
-        public void RemoveNeighbour(Vertex v) {
-            if (v == null) { return; }
-            Neighbours.Remove(v);
-            v.Neighbours.Remove(this);
+        public void AddSingleLinkedNeighbour(Vertex to) {
+            if (to == null) { return; }
+            var edge = new Edge(this, to);
+            Edges.Add(edge);
         }
 
         public override bool Equals(object obj) {
@@ -39,7 +40,7 @@ namespace NGraphs {
         }
 
         public override string ToString() {
-            var neighbours = string.Join(", ", Neighbours.Select(v => v.Value.ToString()));
+            var neighbours = string.Join(", ", Edges.Select(edge => edge.Opposite(this).Value.ToString()));
             return Value + " : " + neighbours;
         }
 
